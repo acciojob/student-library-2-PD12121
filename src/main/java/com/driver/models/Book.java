@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @Entity
 
