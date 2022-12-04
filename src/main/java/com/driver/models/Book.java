@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @Entity
+@NoArgsConstructor
 
 public class Book {
 
@@ -43,7 +44,10 @@ public class Book {
     @JsonIgnoreProperties("book")
     private List<Transaction> transactions;
 
-    public Book() {
+    public Book(String name, Genre genre, Author author) {
+        this.name = name;
+        this.genre = genre;
+        this.author = author;
     }
 }
 
