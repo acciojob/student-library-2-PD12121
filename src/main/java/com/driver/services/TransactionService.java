@@ -90,14 +90,25 @@ public class TransactionService {
 
 
         //for the given transaction calculate the fine amount considering the book has been returned exactly when this function is called
-        int amount = transaction.getFineAmount();
+
 
 
         //make the book available for other users
         //make a new transaction for return book which contains the fine amount as well
+        Transaction newtransaction = Transaction.builder().transactionId(UUID.randomUUID().toString())
+                .book(transaction.getBook())
+                .card(transaction.getCard())
+                .fineAmount(0).transactionStatus(TransactionStatus.SUCCESSFUL)
+                .isIssueOperation(false).build();
 
+        transactionRepository5.save(transaction);
+
+        Book book = transaction.getBook();
+        book.setAvailable(true);
+        book.setCard(null);
+        bookRepository5.save(book);
 
         Transaction returnBookTransaction  = null;
-        return returnBookTransaction; //return the transaction after updating all details
+        return newtransaction; //return the transaction after updating all details
     }
 }
