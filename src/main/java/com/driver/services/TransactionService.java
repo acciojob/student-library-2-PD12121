@@ -1,9 +1,6 @@
 package com.driver.services;
 
-import com.driver.models.Book;
-import com.driver.models.Card;
-import com.driver.models.Transaction;
-import com.driver.models.TransactionStatus;
+import com.driver.models.*;
 import com.driver.repositories.BookRepository;
 import com.driver.repositories.CardRepository;
 import com.driver.repositories.TransactionRepository;
@@ -50,15 +47,19 @@ public class TransactionService {
         // If it fails: throw new Exception("Book is either unavailable or not present");
 
         //2. card is present and activated
-        if(card == null){
+        if(card == null && card.getCardStatus().equals(CardStatus.DEACTIVATED)){
             throw new Exception("Card is invalid");
         }
         // If it fails: throw new Exception("Card is invalid");
         //3. number of books issued against the card is strictly less than max_allowed_books
-
+        if(card.getBooks().size() >= max_allowed_books){
+            throw new Exception("Book limit has reached for this card");
+        }
         // If it fails: throw new Exception("Book limit has reached for this card");
         //If the transaction is successful, save the transaction to the list of transactions and return the id
+        else{
 
+        }
         //Note that the error message should match exactly in all cases
 
        return null; //return transactionId instead
