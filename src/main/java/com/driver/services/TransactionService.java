@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -76,8 +77,14 @@ public class TransactionService {
                     .fineAmount(0).transactionStatus(TransactionStatus.SUCCESSFUL).build();
 
             book.setAvailable(false);
-            book.getTransactions().add(transaction);
-
+            if(book.getTransactions() == null){
+                ArrayList<Transaction>TList=new ArrayList<>();
+                TList.add(transaction);
+                book.setTransactions(TList);
+            }
+            else {
+                book.getTransactions().add(transaction);
+            }
             transactionRepository5.save(transaction);
 
             return transaction.getTransactionId();
