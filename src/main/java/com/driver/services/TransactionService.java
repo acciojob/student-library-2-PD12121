@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class TransactionService {
@@ -33,36 +34,53 @@ public class TransactionService {
 
     public String issueBook(int cardId, int bookId) throws Exception {
         //check whether bookId and cardId already exist
+
+        //conditions required for successful transaction of issue book:
+        //1. book is present and available
+
+        // If it fails: throw new Exception("Book is either unavailable or not present");
+
+        //2. card is present and activated
+
+        // If it fails: throw new Exception("Card is invalid");
+        //3. number of books issued against the card is strictly less than max_allowed_books
+
+        // If it fails: throw new Exception("Book limit has reached for this card");
+        //If the transaction is successful, save the transaction to the list of transactions and return the id
+
+        //Note that the error message should match exactly in all cases
         Book book;
         Card card;
         book = bookRepository5.findById(bookId).get();
         card = cardRepository5.findById(cardId).get();
 
-
-        //conditions required for successful transaction of issue book:
-        //1. book is present and available
         if(!book.isAvailable()){
             throw new Exception("Book is either unavailable or not present");
         }
-        // If it fails: throw new Exception("Book is either unavailable or not present");
-
-        //2. card is present and activated
         if(card == null && card.getCardStatus().equals(CardStatus.DEACTIVATED)){
             throw new Exception("Card is invalid");
         }
-        // If it fails: throw new Exception("Card is invalid");
-        //3. number of books issued against the card is strictly less than max_allowed_books
         if(card.getBooks().size() >= max_allowed_books){
             throw new Exception("Book limit has reached for this card");
         }
-        // If it fails: throw new Exception("Book limit has reached for this card");
-        //If the transaction is successful, save the transaction to the list of transactions and return the id
-        else{
+        else {
+            book.setCard(card);
+            card.getBooks().add(book);
 
+            Transaction transaction = Transaction.builder().
+                    book(book).card(card)
+                    .transactionId(String.valueOf(UUID.randomUUID()))
+                    .isIssueOperation(true)
+                    .fineAmount(0).transactionStatus(TransactionStatus.SUCCESSFUL).build();
+
+            book.setAvailable(false);
+            book.getTransactions().add(transaction);
+
+            transactionRepository5.save(transaction);
+
+            return transaction.getTransactionId();
         }
-        //Note that the error message should match exactly in all cases
-
-       return null; //return transactionId instead
+         //return transactionId instead
     }
 
     public Transaction returnBook(int cardId, int bookId) throws Exception{

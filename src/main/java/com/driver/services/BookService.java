@@ -23,9 +23,16 @@ public class BookService {
 
         if(author == null && available == true){
             books = bookRepository2.findBooksByGenre(genre,available);
-        }
-        else if(available == false){
+            return books;
+        } else if (author == null && genre!=null && available == true) {
+            books = bookRepository2.findBooksByGenre(genre,available);
+            return books;
+        } else if (genre == null) {
+            books = bookRepository2.findBooksByAuthor(author,available);
+            return books;
+        } else if(available == false){
             books = bookRepository2.findBooksByGenreAuthor(genre,author,available);
+            return books;
         }
         return books;
     }
