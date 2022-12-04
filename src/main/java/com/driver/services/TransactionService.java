@@ -45,12 +45,14 @@ public class TransactionService {
         //conditions required for successful transaction of issue book:
         //1. book is present and available
         if(!book.isAvailable()){
-            return "Book is either unavailable or not present";
+            throw new Exception("Book is either unavailable or not present");
         }
         // If it fails: throw new Exception("Book is either unavailable or not present");
 
         //2. card is present and activated
-
+        if(card == null){
+            throw new Exception("Card is invalid");
+        }
         // If it fails: throw new Exception("Card is invalid");
         //3. number of books issued against the card is strictly less than max_allowed_books
 
